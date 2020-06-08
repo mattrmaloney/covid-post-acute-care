@@ -1,17 +1,17 @@
-## COVID-19 post acute care modeling project
+## COVID-19 post-acute care modeling project
 
 Authors: Matthew Maloney and Robert Checketts
 
 Revised: 06/08/2020
 
 ### Overview
-This repository contains code for simulating post-acute care (PAC) outcomes for COVID-19 patients using hospitalization results from epidemiological forecasting models (specifically, this code was developed using output from the Johns Hopkins University Infectious Disease Dynamics (JHU IDD) model). The repository contains five scripts:
+This repository contains code for simulating post-acute care (PAC) outcomes for COVID-19 patients using hospitalization results from epidemiological projection models (specifically, this code was developed using output from the Johns Hopkins University Infectious Disease Dynamics (JHU IDD) model). The repository contains five scripts:
 
 1. *pac_functions.R*: This script contains functions that are used for running the PAC simulations, conducting analysis of the PAC simulations, and creating figures. This script includes detailed comments for each function.
 
-2. *run_post_acute_sims.R*: This script is used to run post-acute care simulations using results from the JHH IDD forecasting model as inputs. One PAC simulation/forecast is run for every input simulation/forecast. The resulting PAC simulations are saved to disk, in the pac_results_data folder by default.
+2. *run_post_acute_sims.R*: This script is used to run post-acute care simulations using results from the JHH IDD model as inputs. One PAC simulation/projection is run for every input simulation/projection. The resulting PAC simulations are saved to disk, in the pac_results_data folder by default.
 
-3. *UT_analysis_example.R*: This script provides an example of analysis that can be conducted using PAC simulation results and functions in *pac_functions.R*. This script loads in results from *run_post_acute_sims.R* and calculates summary statistics/forecasts.  Specifically, average PAC patient counts and flows with prediction intervals are produced and plotted. By default, the resulting figures are stored in *pac_figures.R*.
+3. *UT_analysis_example.R*: This script provides an example of analysis that can be conducted using PAC simulation results and functions in *pac_functions.R*. This script loads in results from *run_post_acute_sims.R* and calculates summary statistics/projections.  Specifically, average PAC patient counts and flows with prediction intervals are produced and plotted. By default, the resulting figures are stored in *pac_figures.R*.
 
 4. *health_system_analysis_example*: similar to the *UT_analysis_example.R* script, except the analysis is done at the level of a hypothetical health care system. The primary difference is that the results from *run_post_acute_sims.R*, which are recorded at the geoid/county level, are weighted by user-provided market share estimates. For this example script, we use hypothetical market share estimates rather than actual University of Utah market share estimates.
 
@@ -40,9 +40,9 @@ The *UT_analysis_example.R* and *health_system_analysis_example.R* scripts provi
 
 * Load in an array of simulation results (i.e., .rds file output(s) from *run_post_acute_sims*) from the *pac_results_data* folder.
 
-* Average PAC patient counts (or flows) at each day in the forecast period over all simulations using the *summarize_pac_sims* function. The first argument will be the array that loaded in the previous step. The output of the *pac_results_data* function is a data frame with rows equal to the number of time periods in the simulation times the number of post-acute care types. The columns of the data frame include the timeid (date), the care type, the expected value of patient counts or flows (mean), the median, and the upper and lower bounds of a 95\% prediction interval. 
+* Average PAC patient counts (or flows) at each day in the projection period over all simulations using the *summarize_pac_sims* function. The first argument will be the array that loaded in the previous step. The output of the *pac_results_data* function is a data frame with rows equal to the number of time periods in the simulation times the number of post-acute care types. The columns of the data frame include the timeid (date), the care type, the expected value of patient counts or flows (mean), the median, and the upper and lower bounds of a 95\% prediction interval. 
 
-* Plot the PAC forecasts using the *pac_plot_fcn* or *pac_plot_fcn2* (two different styles). See the example scripts and *pac_functions.R* script for more information.
+* Plot the PAC projections using the *pac_plot_fcn* or *pac_plot_fcn2* (two different styles). See the example scripts and *pac_functions.R* script for more information.
 
 ### Calculation of hospital discharges
 
