@@ -368,38 +368,38 @@ summary {
 <div id="covid-19-post-acute-care-modeling-project" class="section level2">
 <h2>COVID-19 post acute care modeling project</h2>
 <p>Authors: Matthew Maloney and Robert Checketts</p>
-<p>Revised: 06/07/2020</p>
+<p>Revised: 06/08/2020</p>
 <div id="overview" class="section level3">
 <h3>Overview</h3>
-<p>This repository stores code for simulating post-acute care (PAC) outcomes for COVID-19 patients using hospitalization results from epidemiological forecasting models (specifically, this code was developed using output from the Johns Hopkins University Infectious Disease Dynamics (JHU IDD) model). The repository contains five scripts:</p>
+<p>This repository contains code for simulating post-acute care (PAC) outcomes for COVID-19 patients using hospitalization results from epidemiological forecasting models (specifically, this code was developed using output from the Johns Hopkins University Infectious Disease Dynamics (JHU IDD) model). The repository contains five scripts:</p>
 <ol style="list-style-type: decimal">
-<li><p><em>pac_functions.R</em>: This script contains functions that are used fro running the PAC simulations, conducting analysis of the PAC simulations, and creating figures. This script includes detailed comments for most of the custom functions.</p></li>
+<li><p><em>pac_functions.R</em>: This script contains functions that are used for running the PAC simulations, conducting analysis of the PAC simulations, and creating figures. This script includes detailed comments for each function.</p></li>
 <li><p><em>run_post_acute_sims.R</em>: This script is used to run post-acute care simulations using results from the JHH IDD forecasting model as inputs. One PAC simulation/forecast is run for every input simulation/forecast. The resulting PAC simulations are saved to disk, in the pac_results_data folder by default.</p></li>
-<li><p><em>UT_analysis_example.R</em>: This script provides an example of analysis that can be done of the PAC simulation results using the functions in <em>pac_functions.R</em>. This script loads in some results from the <em>run_post_acute_sims.R</em> and calculates summary statistics of the PAC simulations. Specifically, average PAC patient counts and flows with prediction intervals are produced and plotted. By default, the resulting figures are stored in <em>pac_figures.R</em>.</p></li>
-<li><p><em>health_system_analysis_example</em>: similar to the <em>UT_analysis_example.R</em> script, except the analysis is done at the level of a hypothetical health care system. The primary difference is that the results from <em>run_post_acute_sims.R</em>, which are recorded at the geoid/county level, are weighted by user-provided market share estimates. For this example, we show hypothetical market share estimates rather than actual University of Utah market share estimates.</p></li>
+<li><p><em>UT_analysis_example.R</em>: This script provides an example of analysis that can be conducted using PAC simulation results and functions in <em>pac_functions.R</em>. This script loads in results from <em>run_post_acute_sims.R</em> and calculates summary statistics/forecasts. Specifically, average PAC patient counts and flows with prediction intervals are produced and plotted. By default, the resulting figures are stored in <em>pac_figures.R</em>.</p></li>
+<li><p><em>health_system_analysis_example</em>: similar to the <em>UT_analysis_example.R</em> script, except the analysis is done at the level of a hypothetical health care system. The primary difference is that the results from <em>run_post_acute_sims.R</em>, which are recorded at the geoid/county level, are weighted by user-provided market share estimates. For this example script, we use hypothetical market share estimates rather than actual University of Utah market share estimates.</p></li>
 <li><p><em>svg_to_png.R</em> The analysis scripts save figures as .svg files. This script converts all of them to .png format.</p></li>
 </ol>
 </div>
 <div id="instructions-for-running-post-acute-care-simulations" class="section level3">
 <h3>Instructions for running post-acute care simulations</h3>
-<p>The post-acute care script requires several user-specified inputs at the top of the script. First, <em>hospitalization_data_folder</em> must be set to a directory with .parquet files from the JHU IDD model simulations. There is some sample data (100 JHU IDD simulations stored as individual .parquet files) in the <em>input_data</em> folder include in the repository. Also, the <em>ifr_type</em> string must match the pattern at the start of the file names in the hospitalization data folder. For the JHU IDD model outputs we used for development, the file names began with “low_”, “med_”, or “high_”. Time series of hospitalization discharges (ICU and non-ICU patients) are calculated from these input files. The details of the input data tables and how discharges are calculated is described in the “Calculation of hospital discharges section” of this readme file.</p>
-<p>A user must also define their priors for the fraction of patients who will require each PAC type (the <em>priors_mean_icu</em> and <em>priors_mean_icu</em> vectors) and an estimated length-of-stay for each PAC type (<em>los_icu</em> and <em>los_nonicu</em>). They must also define the weights to be put on those priors (set to 121 and 138 by default – see our full methodology paper for details <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>). Observed counts for the number of COVID-19 discharges that have required each type of PAC type can also be entered. By default, we have included the discharge counts from the University of Utah Hospital as of May 27, 2020. These values can also be set to zero.</p>
-<p>Once all of the parameters are defined, the script can be run. All computations are run on a single thread – the simulations have not been written to run in parallel, primarily due to large amount of memory that would be required to do so given the size of our input data set. With 1,000 input .parquet files, running the script took about 10 minutes on a laptop with an intel i7-7500u cpu and 16GB of RAM.</p>
-<p>The PAC simulation results are stored in four separate arrays: one with PAC patient counts/census for former icu hospitalizations, one with PAC patient counts for former non-icu hospitalizations, one with daily patient flows into each PAC type for former icu hospitalizations, and one for daily patient flows into each PAC type for former non-icu hospitalizations. Each of these four arrays has four dimensions that are indexed by:</p>
+<p>The post-acute care script requires several user-specified inputs at the top of the script. First, <em>hospitalization_data_folder</em> must be set to a directory with .parquet files from the JHU IDD model simulations. There is some sample data (100 JHU IDD simulations stored as individual .parquet files) in the <em>input_data</em> folder include in the repository. Also, the <em>ifr_type</em> string must match the pattern at the start of the file names in the hospitalization data folder. For the JHU IDD model outputs we used for development, the file names began with “low_”, “med_”, or “high_”. The input data tables only includes hospitalization counts over time, rather than discharges over time. Time series of hospitalization discharges (ICU and non-ICU patients) are calculated from these input tables. The “Calculation of hospital discharges section” at the end of this readme file describes these input tables and reviews how discharges are calculated from their contents.</p>
+<p>A user must also define priors for the fraction of patients who will require each PAC type (the <em>priors_mean_icu</em> and <em>priors_mean_icu</em> vectors) and an estimated length-of-stay for each PAC type (<em>los_icu</em> and <em>los_nonicu</em> vectors). Users also define the weights to be put on those priors (set to 121 and 138 by default – see our full methodology paper for details [1]. The <em>observed_icu</em> and <em>observed_nonicu</em> vectors are for the observed number of COVID-19 discharges that have required each type of PAC. By default, we have included the discharge counts from the University of Utah Hospital as of May 27, 2020. These values can also be set to zero.</p>
+<p>Once all of the user inputs are defined/entered, the script can be run. All computations are run on a single thread – the simulations have not been written to run in parallel. With 1,000 input .parquet files, running the script took about 10 minutes on a laptop with an intel i7-7500u cpu and 16GB of RAM.</p>
+<p>The PAC simulation results are stored in four separate arrays: one with PAC patient counts/census for former icu hospitalizations, one with PAC patient counts for former non-icu hospitalizations, one with daily patient flows into each PAC type for former icu hospitalizations, and one for daily patient flows into each PAC type for former non-icu hospitalizations. Each of these four arrays has four dimensions:</p>
 <ol style="list-style-type: decimal">
 <li>geoid</li>
 <li>simulation number</li>
 <li>timeid (days)</li>
 <li>PAC type (e.g., hh, snf, etc.)</li>
 </ol>
-<p>At the end of the <em>run_post_acute_sims.</em>R* script, these arrays are saved to disk as R objects (.rds file extension). By default, they are saved in the <em>pac_results_data</em> folder.</p>
+<p>At the end of the <em>run_post_acute_sims.R</em> script, these arrays are saved to disk as R objects (.rds file extension). By default, they are saved in the <em>pac_results_data</em> folder.</p>
 </div>
 <div id="instructions-for-performing-analysis-using-included-functions" class="section level3">
 <h3>Instructions for performing analysis using included functions</h3>
 <p>The <em>UT_analysis_example.R</em> and <em>health_system_analysis_example.R</em> scripts provide examples of how to perform analysis and create figures that summarize the post-acute care simulations. A typical analysis workflow might be</p>
 <ul>
-<li><p>Load in an array of simulation results (i.e., .rds file output from <em>run_post_acute_sims</em>) from the <em>pac_results_data</em> folder.</p></li>
-<li><p>Average PAC patient counts at each day in the forecast period over all simulations using the <em>summarize_pac_sims</em> function. The first argument will be the array that was previously loaded. The output of the <em>pac_results_data</em> function is a data frame with rows equal to the number of time periods in the simulation times the number of post-acute care types. The columns include the timeid (date), the care type, the expected value of patient counts or flows (mean), the median, and the upper and lower bounds of a 95% prediction interval.</p></li>
+<li><p>Load in an array of simulation results (i.e., .rds file output(s) from <em>run_post_acute_sims</em>) from the <em>pac_results_data</em> folder.</p></li>
+<li><p>Average PAC patient counts (or flows) at each day in the forecast period over all simulations using the <em>summarize_pac_sims</em> function. The first argument will be the array that loaded in the previous step. The output of the <em>pac_results_data</em> function is a data frame with rows equal to the number of time periods in the simulation times the number of post-acute care types. The columns of the data frame include the timeid (date), the care type, the expected value of patient counts or flows (mean), the median, and the upper and lower bounds of a 95% prediction interval.</p></li>
 <li><p>Plot the PAC forecasts using the <em>pac_plot_fcn</em> or <em>pac_plot_fcn2</em> (two different styles). See the example scripts and <em>pac_functions.R</em> script for more information.</p></li>
 </ul>
 </div>
@@ -418,13 +418,11 @@ summary {
 <p>Discharges are calculated as follows:</p>
 <p>(hospital discharges) = (previous day hosp_curr) + (given day hospital covid-19 admits) - (given day hospital covid-19 census) (icu_discharges) = (previous day hospital covid-19 census) + (given day hospital covid-19 admits) - (given day hospital covid-19 census) (non_icu_discharges) = (hospital discharges) - (icu_discharges)</p>
 <p>The output returns the date, geoid, sim_num, icu_discharge, non_icu_discharge, hosp_curr.</p>
-</div>
-</div>
-<div class="footnotes">
 <hr />
-<ol>
-<li id="fn1"><p>Maloney, M., Morley, R., Checketts, R., Weir, P., Barfuss, D., Meredith, H.R., Hofmann, M., Samore, M.H., Keegan, L.T. (2020). Planning for the aftershocks: a model of post-acute care needs for hospitalized COVID-19 patients. Working paper<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<ol style="list-style-type: decimal">
+<li>Maloney, M., Morley, R., Checketts, R., Weir, P., Barfuss, D., Meredith, H.R., Hofmann, M., Samore, M.H., Keegan, L.T. (2020). Planning for the aftershocks: a model of post-acute care needs for hospitalized COVID-19 patients. Working paper</li>
 </ol>
+</div>
 </div>
 
 
