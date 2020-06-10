@@ -7,8 +7,8 @@ pac_data_folder <- './/pac_results_data'
 figures_folder <- './/pac_figures'
 
 # scenario name
-ifr_type <- 'high'
-scen_descript <- '_southwest_CurrentUtah'
+ifr_type <- 'med'
+scen_descript <- '_example_low_R0'
 scen_name <- paste0(ifr_type,'_IFR',scen_descript)
 
 # full names for post-acute care services
@@ -36,17 +36,17 @@ source('.//pac_functions.R')
 # calculate summary stats for for former icu patient pac (counts)
 pac_HS_icu <- summarize_pac_sims(sim_results = simArr_icu,
                                  geoids = hs_geoids,
-                                 multiplier = rep(1,length(hs_geoids)))
+                                 multiplier = hs_market_share)
 
 # calculate summary stats for former non-icu patients (counts)
 pac_HS_nonicu <- summarize_pac_sims(sim_results = simArr_nonicu,
                                     geoids = hs_geoids,
-                                    multiplier = rep(1,length(hs_geoids)))
+                                    multiplier = hs_market_share)
 
 # calculate summary stats for all former hospitalized patients (counts)
 pac_HS_all <- summarize_pac_sims(sim_results = simArr_nonicu+simArr_icu,
                                  geoids = hs_geoids,
-                                 multiplier = rep(1,length(hs_geoids)))
+                                 multiplier = hs_market_share)
 
 # summarize flows to pac 
 # ************************************
@@ -54,7 +54,7 @@ pac_HS_all <- summarize_pac_sims(sim_results = simArr_nonicu+simArr_icu,
 # calculate summary stats for all former hospitalized patients (flows)
 pac_HS_all_inflow <- summarize_pac_sims(simArr_nonicu_inflow+simArr_icu_inflow,
                                         geoids = hs_geoids,
-                                        multiplier = rep(1,length(hs_geoids)))
+                                        multiplier = hs_market_share)
 
 
 # create figures -------------------------------------------------------------------
@@ -83,7 +83,7 @@ p
 
 # former icu patient counts
 p <- pac_plot_fcn2(pac_HS_icu, 
-                   titleText = 'Post-acute care census, former non-ICU patients',
+                   titleText = 'Post-acute care census, former ICU patients',
                    subtitleText = 'Health System X', 
                    full_names = full_ct_names)
 plot_save_function(p, figures_folder, fileStr = 'Health_System_X_census_nonicu2')

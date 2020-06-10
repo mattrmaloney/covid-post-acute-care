@@ -5,21 +5,21 @@ Authors: Matthew Maloney and Robert Checketts
 Revised: 06/08/2020
 
 ### Overview
-This repository contains code for simulating post-acute care (PAC) outcomes for COVID-19 patients using hospitalization results from epidemiological projection models (specifically, this code was developed using output from the Johns Hopkins University Infectious Disease Dynamics (JHU IDD) model). The repository contains five scripts:
+This repository contains code for simulating post-acute care (PAC) outcomes for COVID-19 patients using hospitalization results from epidemiological projection models. This code was specifically developed using output from the Johns Hopkins University Infectious Disease Dynamics (JHU IDD) model and we present example output data from that model. To use other models, the outputs files from those models can either be adapted to match the format of the JHU IDD model or the scripts can be edited to take a different file type. The repository contains five scripts:
 
 1. *pac_functions.R*: This script contains functions that are used for running the PAC simulations, conducting analysis of the PAC simulations, and creating figures. This script includes detailed comments for each function.
 
 2. *run_post_acute_sims.R*: This script is used to run post-acute care simulations using results from the JHH IDD model as inputs. One PAC simulation/projection is run for every input simulation/projection. The resulting PAC simulations are saved to disk, in the pac_results_data folder by default.
 
-3. *UT_analysis_example.R*: This script provides an example of analysis that can be conducted using PAC simulation results and functions in *pac_functions.R*. This script loads in results from *run_post_acute_sims.R* and calculates summary statistics/projections.  Specifically, average PAC patient counts and flows with prediction intervals are produced and plotted. By default, the resulting figures are stored in *pac_figures.R*.
+3. *state_analysis_example.R*: This script provides an example of analysis that can be conducted using PAC simulation results and functions in *pac_functions.R*. This script loads in results from *run_post_acute_sims.R* and calculates summary statistics/projections.  Specifically, average PAC patient counts and flows with prediction intervals are produced and plotted. By default, the resulting figures are stored in *pac_figures.R*.
 
-4. *health_system_analysis_example*: similar to the *UT_analysis_example.R* script, except the analysis is done at the level of a hypothetical health care system. The primary difference is that the results from *run_post_acute_sims.R*, which are recorded at the geoid/county level, are weighted by user-provided market share estimates. For this example script, we use hypothetical market share estimates rather than actual University of Utah market share estimates.
+4. *health_system_analysis_example.R*: similar to the *state_analysis_example.R* script, except the analysis is done at the level of a hypothetical health care system. The primary difference is that the results from *run_post_acute_sims.R*, which are recorded at the geoid/county level, are weighted by user-provided market share estimates. For this example script, we use hypothetical market share estimates rather than actual University of Utah market share estimates.
 
 5. *svg_to_png.R* The analysis scripts save figures as .svg files. This script converts all of them to .png format.
 
 ### Instructions for running post-acute care simulations
 
-The post-acute care script requires several user-specified inputs at the top of the script. First, *hospitalization_data_folder* must be set to a directory with .parquet files from the JHU IDD model simulations. There is some sample data (100 JHU IDD simulations stored as individual .parquet files) in the *input_data* folder include in the repository. Also, the *ifr_type* string must match the pattern at the start of the file names in the hospitalization data folder. For the JHU IDD model outputs we used for development, the file names began with "low_", "med_", or "high_". The input data tables only includes hospitalization counts over time, rather than discharges over time. Time series of hospitalization discharges (ICU and non-ICU patients) are calculated from these input tables. The "Calculation of hospital discharges section" at the end of this readme file describes these input tables and reviews how discharges are calculated from their contents.
+The post-acute care script requires several user-specified inputs at the top of the script. First, *hospitalization_data_folder* must be set to a directory with .parquet files from the JHU IDD model simulations. A sample data set is provided (100 JHU IDD simulations stored as individual .parquet files) in the *input_data\example_low_R0* folder included in the repository. This example data set consists of a non-representative subset used to produce projections found in the full methodology paper [1]. These data are included to allow the user to run the model "out of the box" and are not meant to represent or be used as a forecast or projection of actual cases or scenarios. Also, the *ifr_type* string must match the pattern at the start of the file names in the hospitalization data folder. For the JHU IDD model outputs we used for development, the file names began with "low_", "med_", or "high_" these correspond to the different infection fatality rates considered by the JHU IDD model (0.25%, 0.5%, and 1% IFR). The input data tables only include hospitalization counts over time, rather than discharges over time. Time series of hospitalization discharges (ICU and non-ICU patients) are calculated from these input tables. The "calculation of hospital discharges section" at the end of this readme file describes these input tables and reviews how discharges are calculated from their contents.
 
 A user must also define priors for the fraction of patients who will require each PAC type (the *priors_mean_icu* and *priors_mean_icu* vectors) and an estimated length-of-stay for each PAC type (*los_icu* and *los_nonicu* vectors). Users also define the weights to be put on those priors (set to 121 and 138 by default -- see our full methodology paper for details [1]. The *observed_icu* and *observed_nonicu* vectors are for the observed number of COVID-19 discharges that have required each type of PAC. By default, we have included the discharge counts from the University of Utah Hospital as of May 27, 2020. These values can also be set to zero.
 
@@ -36,7 +36,7 @@ At the end of the *run_post_acute_sims.R* script, these arrays are saved to disk
 
 ### Instructions for performing analysis using included functions
 
-The *UT_analysis_example.R* and *health_system_analysis_example.R* scripts provide examples of how to perform analysis and create figures that summarize the post-acute care simulations. A typical analysis workflow might be
+The *state_analysis_example.R* and *health_system_analysis_example.R* scripts provide examples of how to perform analysis and create figures that summarize the post-acute care simulations. A typical analysis workflow might be
 
 * Load in an array of simulation results (i.e., .rds file output(s) from *run_post_acute_sims*) from the *pac_results_data* folder.
 
@@ -46,13 +46,13 @@ The *UT_analysis_example.R* and *health_system_analysis_example.R* scripts provi
 
 ### Calculation of hospital discharges
 
-The function *get_discharges* is used to calculate hospital discharges (both ICU and non-ICU). It assumes the data inputs match the structure of the Johns Hopkins COVID-19 model. The needed inputs for the function include the hospitalizations parquet files. Within a parquet file it is assumed that there will be the following columns:
+The function *get_discharges* is used to calculate hospital discharges (both ICU and non-ICU). It assumes the data inputs match the structure of the JHU IDD model. The needed inputs for the function include the hospitalizations parquet files. Within a parquet file it is assumed that there will be the following columns:
 
-* hosp_curr: COVID-19 patient census at the end of day. This is inclusive of ICU and non-IC. This includes incidH.
+* hosp_curr: COVID-19 patient census at the end of day. This is inclusive of ICU and non-ICU. This includes incidH.
 * incidH: New COVID-19 patients. This is inclusive of ICU and non-ICU COVID-19 patients.
-* icu_curr: COVID-19 ICU patient census at the end of day. This includes incidICU
+* icu_curr: COVID-19 ICU patient census at the end of day. This includes incidICU.
 * incidICU: New COVID-19 ICU patients.
-* geoid: Geo location ID.
+* geoid: Geo location ID (state-county level).
 * time: Date.
 * sim_num: Simulation ID.
 

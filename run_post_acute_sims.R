@@ -3,27 +3,29 @@
 #general information: this script calculates discharges and post-acute care outcomes for 
 # covid patients using  hospitalization results from an epidemiology model (specifically, 
 # the Johns Hopkins University Infectious Disease Dynamics (JHU IDD) model). See the repository
-# readme for  more information.
+# readme formore information.
 
 # Libraries ----
 library(arrow) # for loading parquet files
 library(dplyr) # for manipulating data
 library(ggplot2) # for visualizations
 library(gtools) # dirichlet distribution
-library(data.table)
+library(data.table) # for manipulating data
 
 #inputs -------------------------------------------------------------------------------------------
 
 # folder location with hospitalization data
-# (designed for JHH model output as series of .parquet files)
-hospitalization_data_folder <- '.\\input_data\\May 18\\southwest_CurrentUtah'
+# designed for JHH model output as series of .parquet files
+# designed for one policy scenario per folder, but each folder can include data for multiple
+# IFR values 
+hospitalization_data_folder <- '.\\input_data\\example_low_R0'
 
 # folders for storing results
 results_folder <- '.\\pac_results_data'
 
 # scenario name
-ifr_type <- 'med' #this is used to pull from the correct file, must be low, med, or high
-scen_descript <- '_southwest_CurrentUtah' #additional description of policy or scenario to add to output file names
+ifr_type <- 'med' #this is used to pull from the subset of files from the hospitalization_data_folder, must be low, med, or high
+scen_descript <- '_example_low_R0' #additional description of policy or scenario to add to output file names
 scen_name <- paste0(ifr_type,'_IFR',scen_descript)
 
 # priors for fraction of patients who require specialized post-acute care
@@ -82,7 +84,7 @@ simArr_nonicu <- array(
 simArr_icu_inflow <- simArr_icu
 simArr_nonicu_inflow <- simArr_nonicu
 
-#sort discharge data (required)
+#sort discharge data (REQUIRED)
 discharge_data <- discharge_data %>% arrange(time,sim_num,geoid)
 
 dischargeArr_icu <-  array(
