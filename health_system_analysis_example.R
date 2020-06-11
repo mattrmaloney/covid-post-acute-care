@@ -3,8 +3,8 @@ library(dplyr) # for manipulating data
 library(ggplot2) # for visualizations
 
 # folders
-pac_data_folder <- './/pac_results_data'
-figures_folder <- './/pac_figures'
+pac_data_folder <- file.path('pac_results_data')
+figures_folder <- file.path('pac_figures')
 
 # scenario name
 ifr_type <- 'med'
@@ -22,12 +22,12 @@ hs_geoids <- c('49043','49035','49049')
 hs_market_share <- c(0.7,0.5,0.2)
 
 #import data and functions
-simArr_icu <- readRDS(paste0(pac_data_folder,'//', scen_name, '_pac_results_icu.rds'))
-simArr_nonicu <- readRDS(paste0(pac_data_folder,'//', scen_name, '_pac_results_nonicu.rds'))
-simArr_icu_inflow <- readRDS(paste0(pac_data_folder,'//', scen_name, '_pac_results_icu_inflow.rds'))
-simArr_nonicu_inflow <- readRDS(paste0(pac_data_folder,'//', scen_name, '_pac_results_nonicu_inflow.rds'))
+simArr_icu <- readRDS(file.path(pac_data_folder, paste0(scen_name, '_pac_results_icu.rds')))
+simArr_nonicu <- readRDS(file.path(pac_data_folder, paste0(scen_name, '_pac_results_nonicu.rds')))
+simArr_icu_inflow <-  readRDS(file.path(pac_data_folder, paste0(scen_name, '_pac_results_icu_inflow.rds')))
+simArr_nonicu_inflow <- readRDS(file.path(pac_data_folder, paste0(scen_name, '_pac_results_nonicu_inflow.rds')))
 
-source('.//pac_functions.R')
+source(file.path('pac_functions.R'))
 
 # calculate simulation summary stats----------------------------------------------------------------
 

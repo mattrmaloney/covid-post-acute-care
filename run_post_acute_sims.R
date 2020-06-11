@@ -18,10 +18,10 @@ library(data.table) # for manipulating data
 # designed for JHH model output as series of .parquet files
 # designed for one policy scenario per folder, but each folder can include data for multiple
 # IFR values 
-hospitalization_data_folder <- '.\\input_data\\example_low_R0'
+hospitalization_data_folder <- file.path('input_data','example_low_R0')
 
 # folders for storing results
-results_folder <- '.\\pac_results_data'
+results_folder <- file.path('pac_results_data')
 
 # scenario name
 ifr_type <- 'med' #this is used to pull from the subset of files from the hospitalization_data_folder, must be low, med, or high
@@ -47,7 +47,7 @@ observed_nonicu <-  c('none' = 45,'hh' = 4,'snf' = 3,'hos' = 2)
 # Run post-acute care simulations-------------------------------------------------------------------
 
 # load post-acute care functions
-source('.//pac_functions.R')
+source(file.path('pac_functions.R'))
 
 # Get hospitalization data filenames
 full_loc <- list.files(pattern = paste0(ifr_type,".*.parquet"),
@@ -141,18 +141,18 @@ rm(s,cntyId)
 # save raw pac ouput data
 saveRDS(
   simArr_icu,
-  paste(results_folder,paste0(scen_name,'_','pac_results_icu.rds'),sep ='\\')
+  file.path(results_folder,paste0(scen_name,'_','pac_results_icu.rds'))
   )
 saveRDS(
   simArr_nonicu,
-  paste(results_folder,paste0(scen_name,'_','pac_results_nonicu.rds'),sep ='\\')
+  file.path(results_folder,paste0(scen_name,'_','pac_results_nonicu.rds'))
   )
 saveRDS(
   simArr_icu_inflow,
-  paste(results_folder,paste0(scen_name,'_','pac_results_icu_inflow.rds'),sep ='\\')
+  file.path(results_folder,paste0(scen_name,'_','pac_results_icu_inflow.rds'))
   )
 saveRDS(
   simArr_nonicu_inflow,
-  paste(results_folder,paste0(scen_name,'_','pac_results_nonicu_inflow.rds'),sep ='\\')
+  file.path(results_folder,paste0(scen_name,'_','pac_results_nonicu_inflow.rds'))
   )
 

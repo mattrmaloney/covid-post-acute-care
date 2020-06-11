@@ -193,8 +193,8 @@ pac_plot_fcn <- function(simSummary,
 
 plot_save_function <- function(plot_object, fig_folder,fileStr, height = 4, width = 7){
   # description: function to streamline saving plots. Saves plots as .rds objects and .svg
-  saveRDS(p, file = paste0(figures_folder,'\\',scen_name,'_',fileStr,'.rds'))
-  svg(file = paste0(figures_folder,'\\',scen_name,'_',fileStr,'.svg'), height = height, width = width)
+  saveRDS(p, file = file.path(figures_folder, paste0(scen_name,'_',fileStr,'.rds')))
+  svg(file = file.path(figures_folder, paste0(scen_name,'_',fileStr,'.svg')), height = height, width = width)
   print(p)
   dev.off()
 }
