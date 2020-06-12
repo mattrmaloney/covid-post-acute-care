@@ -4,7 +4,7 @@ Revised: 06/12/2020
 
 Authors: Matthew R. Maloney, Robert Checketts, and Lindsay T. Keegan
 
-License:  This open-source project is licensed under GNU GPLv3 (see LICENSE.TXT file).
+License:  This open-source project is licensed under GNU GPLv3 (see LICENSE.txt).
 
 ### Description
 This repository contains code for simulating post-acute care (PAC) outcomes for COVID-19 patients using hospitalization results from epidemiological projection models. This code was specifically developed using output from the Johns Hopkins University Infectious Disease Dynamics (JHU IDD) model, and this respository includes example output data from that model. To use other models, the output files from those models can either be adapted to match the format of the JHU IDD model or the scripts can be edited to take a different file type. The repository contains five scripts:
